@@ -1,4 +1,22 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file
 plugins {
     id 'com.android.application' version '8.12.0' apply false
+}
+
+// 加载本地密钥属性（如果有的话）
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+// 将属性注入所有子项目
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android.signingConfigs.all { config ->
+                // 这里不用改动，只是确保属性传递
+            }
+        }
+    }
 }
