@@ -1,16 +1,11 @@
 /build
 /app/build
 github.sh
-platform.keystore
 build.bat
 /.continue/
 /.gradle
 keystore.properties
 keystore.properties
-*.keystore
-!platform.keystore  # platform.keystore可以提交
-
-# 构建输出
 build/
 *.apk
 *.aab
