@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    sharedUserId="minesms.app"
     package="prts.user.authorization0">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -93,7 +94,33 @@
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
+    <uses-permission android:name="rikka.shizuku.REQUEST_PERMISSION"/>
+
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
+
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
+    <uses-permission android:name="android.permission.MOUNT_FORMAT_FILESYSTEMS"/>
+
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_PROFILES"/>
+
+    <uses-permission android:name="android.permission.DELETE_CACHE_FILES"/>
+
+    <uses-permission android:name="android.permission.MANAGE_MEDIA"/>
+
+    <uses-permission android:name="android.permission.MANAGE_ONGOING_CALLS"/>
+
+    <uses-permission android:name="android.permission.MANAGE_OWN_CALLS"/>
+
+    <uses-permission android:name="android.permission.MANAGE_WIFI_INTERFACES"/>
+
+    <uses-permission android:name="android.permission.MANAGE_WIFI_NETWORK_SELECTION"/>
+
+    <uses-permission android:name="android.permission.REQUEST_COMPANION_SELF_MANAGED"/>
+
+    <uses-permission android:name="android.permission.BIND_DREAM_SERVICE"/>
 
     <application
         android:allowBackup="true"
@@ -104,19 +131,16 @@
         <activity
             android:name="SplashActivity"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:label="@string/launcher_name"
             android:icon="@drawable/prts"
             android:configChanges="orientation|screenSize">
 
             <intent-filter>
 
-                <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
 
                 <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
 
                 <category android:name="android.intent.category.HOME"/>
 
@@ -158,6 +182,8 @@
         </provider>
 
         <service android:name="prts.user.authorization0.KeepAliveService"/>
+
+        <activity android:name="prts.user.authorization0.DocumentsProvider"/>
 
     </application>
 

@@ -1,36 +1,24 @@
 package prts.user.authorization0;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
-import android.provider.DocumentsProvider;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import android.os.CancellationSignal;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 
-public class DocumentsProvider extends DocumentsProvider {
-    
+public class DocumentsProvider extends android.provider.DocumentsProvider {
+
     private static final String TAG = "DocumentsProvider";
     private static final String AUTHORITY = "prts.user.authorization0.provider";
 
-    // 根目录ID
     private static final String ROOT_ID = "root";
-
-    // 各个目录的ID
     private static final String ANDROID_DATA_ID = "android_data";
     private static final String ANDROID_OBB_ID = "android_obb";
     private static final String DATA_ID = "data";
@@ -38,21 +26,11 @@ public class DocumentsProvider extends DocumentsProvider {
     private static final String OPERATORS_FILE_ID = "operators_file";
     private static final String ROOTFS_ID = "rootfs";
     private static final String DEBUGAPK_ID = "debug.apk";
-    private static final String BUILDPROP_ID = "build.prop";
+    private static final String SHELL_ID = "android_shell";
 
-    // MIME类型
     private static final String MIME_TYPE_DIR = DocumentsContract.Document.MIME_TYPE_DIR;
     private static final String MIME_TYPE_APK = "application/vnd.android.package-archive";
-    private static final String MIME_TYPE_TEXT = "plain/text";
-    private static final String MIME_TYPE_NOTICE = getString(R.string.provider_notice);
-
-    // 显示名称
-    private static final String ROOT_DISPLAY_NAME = "";
-
-    private static String getString(int provider_notice) {
-        return String.valueOf(R.string.provider_notice);
-      //return R.string.provider_notice;
-    }
+    private static final String MIME_TYPE_TEXT = "text/plain";
 
     @Override
     public boolean onCreate() {
@@ -67,50 +45,44 @@ public class DocumentsProvider extends DocumentsProvider {
         row.add(DocumentsContract.Root.COLUMN_ROOT_ID, ROOT_ID);
         row.add(DocumentsContract.Root.COLUMN_DOCUMENT_ID, ROOT_ID);
 
-        // 使用资源字符串代替硬编码
         Context context = getContext();
-        String title = context.getString(R.string.dc_name); // 应用数据与文件
-        String summary = context.getString(R.string.dc_subname); // 描述
+        String title = context.getString(R.string.dc_name);
+        String summary = context.getString(R.string.dc_subname);
 
         row.add(DocumentsContract.Root.COLUMN_TITLE, title);
         row.add(DocumentsContract.Root.COLUMN_SUMMARY, summary);
 
-        row.add(DocumentsContract.Root.COLUMN_FLAGS, 
-                DocumentsContract.Root.FLAG_SUPPORTS_CREATE | 
+        row.add(DocumentsContract.Root.COLUMN_FLAGS,
+                DocumentsContract.Root.FLAG_SUPPORTS_CREATE |
                 DocumentsContract.Root.FLAG_LOCAL_ONLY);
         row.add(DocumentsContract.Root.COLUMN_MIME_TYPES, "*/*");
         row.add(DocumentsContract.Root.COLUMN_AVAILABLE_BYTES, -1);
 
         return result;
     }
-    
-    
-    
 
     @Override
-    public Cursor queryChildDocuments(String parentDocumentId, String[] projection, 
+    public Cursor queryChildDocuments(String parentDocumentId, String[] projection,
                                       String sortOrder) throws FileNotFoundException {
 
         List<DocumentItem> children = new ArrayList<>();
+        Context context = getContext();
 
         if (ROOT_ID.equals(parentDocumentId)) {
-            // 根目录下的子目录
-            children.add(new DocumentItem(MIME_TYPE_NOTICE, MIME_TYPE_NOTICE, "", MIME_TYPE_TEXT));
-            children.add(new DocumentItem(ANDROID_DATA_ID, "android_data", 
-                                          "/sdcard/Android/data/" + getContext().getPackageName(), MIME_TYPE_DIR));
-            children.add(new DocumentItem(ANDROID_OBB_ID, "android_obb", 
-                                          "/sdcard/Android/obb/" + getContext().getPackageName(), MIME_TYPE_DIR));
-            children.add(new DocumentItem(DATA_ID, "data", 
-                                          "/data/data/" + getContext().getPackageName(), MIME_TYPE_DIR));
-            children.add(new DocumentItem(USER_DE_DATA_ID, "user_de_data", 
-                                          "/data/user_de/0/" + getContext().getPackageName(), MIME_TYPE_DIR));
-            children.add(new DocumentItem(OPERATORS_FILE_ID, "operators_file", 
-                                          "/sdcard/DCIM/Authorization", MIME_TYPE_DIR));
+            children.add(new DocumentItem(ANDROID_DATA_ID, "android_data",
+                    "/sdcard/Android/data/" + context.getPackageName(), MIME_TYPE_DIR));
+            children.add(new DocumentItem(ANDROID_OBB_ID, "android_obb",
+                    "/sdcard/Android/obb/" + context.getPackageName(), MIME_TYPE_DIR));
+            children.add(new DocumentItem(DATA_ID, "data",
+                    "/data/data/" + context.getPackageName(), MIME_TYPE_DIR));
+            children.add(new DocumentItem(USER_DE_DATA_ID, "user_de_data",
+                    "/data/user_de/0/" + context.getPackageName(), MIME_TYPE_DIR));
+            children.add(new DocumentItem(OPERATORS_FILE_ID, "operators_file",
+                    "/sdcard/DCIM/Authorization", MIME_TYPE_DIR));
             children.add(new DocumentItem(ROOTFS_ID, "rootfs", "/", MIME_TYPE_DIR));
-            children.add(new DocumentItem(BUILDPROP_ID, "build.prop", "/system/build.prop", MIME_TYPE_TEXT));
-            
+            children.add(new DocumentItem(SHELL_ID, "android_shell",
+                    "/data/user_de/0/com.android.shell/", MIME_TYPE_DIR));
         } else {
-            // 处理各目录的实际文件
             String path = getPathForDocumentId(parentDocumentId);
             if (path != null) {
                 File dir = new File(path);
@@ -118,14 +90,13 @@ public class DocumentsProvider extends DocumentsProvider {
                     File[] files = dir.listFiles();
                     if (files != null) {
                         for (File file : files) {
-                            String mimeType = file.isDirectory() ? 
+                            String mimeType = file.isDirectory() ?
                                 MIME_TYPE_DIR : getMimeType(file.getName());
                             children.add(new DocumentItem(
-                                             parentDocumentId + ":" + file.getName(),
-                                             file.getName(),
-                                             file.getAbsolutePath(),
-                                             mimeType
-                                         ));
+                                    parentDocumentId + ":" + file.getName(),
+                                    file.getName(),
+                                    file.getAbsolutePath(),
+                                    mimeType));
                         }
                     }
                 }
@@ -136,7 +107,7 @@ public class DocumentsProvider extends DocumentsProvider {
     }
 
     @Override
-    public Cursor queryDocument(String documentId, String[] projection) 
+    public Cursor queryDocument(String documentId, String[] projection)
     throws FileNotFoundException {
 
         MatrixCursor result = new MatrixCursor(resolveDocumentProjection(projection));
@@ -154,8 +125,8 @@ public class DocumentsProvider extends DocumentsProvider {
     }
 
     @Override
-    public ParcelFileDescriptor openDocument(String documentId, String mode, 
-                                             CancellationSignal signal) 
+    public ParcelFileDescriptor openDocument(String documentId, String mode,
+                                             CancellationSignal signal)
     throws FileNotFoundException {
 
         String path = getPathForDocumentId(documentId);
@@ -187,7 +158,7 @@ public class DocumentsProvider extends DocumentsProvider {
     }
 
     @Override
-    public String createDocument(String parentDocumentId, String mimeType, String displayName) 
+    public String createDocument(String parentDocumentId, String mimeType, String displayName)
     throws FileNotFoundException {
 
         String path = getPathForDocumentId(parentDocumentId);
@@ -215,17 +186,16 @@ public class DocumentsProvider extends DocumentsProvider {
         return parentDocumentId + ":" + displayName;
     }
 
-    // 辅助方法
     private String getPathForDocumentId(String documentId) {
         Context context = getContext();
         String packageName = context.getPackageName();
 
         switch (documentId) {
             case ANDROID_DATA_ID:
-                return Environment.getExternalStorageDirectory() + 
+                return Environment.getExternalStorageDirectory() +
                     "/Android/data/" + packageName;
             case ANDROID_OBB_ID:
-                return Environment.getExternalStorageDirectory() + 
+                return Environment.getExternalStorageDirectory() +
                     "/Android/obb/" + packageName;
             case DATA_ID:
                 return "/data/data/" + packageName;
@@ -236,8 +206,9 @@ public class DocumentsProvider extends DocumentsProvider {
                     Environment.DIRECTORY_DCIM) + "/Authorization";
             case ROOT_ID:
                 return "/";
+            case SHELL_ID:
+                return "/data/data/com.android.shell";
             default:
-                // 处理文件路径
                 if (documentId.contains(":")) {
                     String[] parts = documentId.split(":", 2);
                     if (parts.length == 2) {
@@ -306,7 +277,7 @@ public class DocumentsProvider extends DocumentsProvider {
     private void addRootRow(MatrixCursor cursor) {
         MatrixCursor.RowBuilder row = cursor.newRow();
         row.add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, ROOT_ID);
-        row.add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, ROOT_DISPLAY_NAME);
+        row.add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, "");
         row.add(DocumentsContract.Document.COLUMN_MIME_TYPE, MIME_TYPE_DIR);
         row.add(DocumentsContract.Document.COLUMN_FLAGS, 0);
         row.add(DocumentsContract.Document.COLUMN_SIZE, null);
@@ -356,7 +327,6 @@ public class DocumentsProvider extends DocumentsProvider {
         };
     }
 
-    // 文档项数据类
     private static class DocumentItem {
         String id;
         String displayName;

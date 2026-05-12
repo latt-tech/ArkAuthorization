@@ -1,5 +1,6 @@
 package prts.user.authorization0;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -33,6 +34,8 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.io.FileOutputStream;
+import android.widget.Toast;
+import android.content.Intent;
 
 public class VideoPlayerActivity extends Activity {
     private static final int REQUEST_READ_STORAGE = 1;
@@ -44,7 +47,8 @@ public class VideoPlayerActivity extends Activity {
     private TextView operatorName;  // 职业图标上方的干员名称
     private TextView operatorStar;  // 职业图标上方的星级
     private TextView introductionText;  // 右下角介绍文本
-
+    
+    
     // 视频相关
     private List<String> videoPaths = new ArrayList<>();
     private Map<String, CharacterConfig> characterConfigs = new HashMap<>();
@@ -98,6 +102,7 @@ public class VideoPlayerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler.post(gcRunnable);
+        
 
         // 设置全屏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -112,6 +117,10 @@ public class VideoPlayerActivity extends Activity {
         // 检查权限
         if (checkPermission()) {
             loadVideosAndConfigs();
+            
+
+            // 在启动时请求权限
+            
         }
 
         // 设置视频播放完成监听器
@@ -121,6 +130,9 @@ public class VideoPlayerActivity extends Activity {
                 }
             });
     }
+    
+
+    
 
     private void initUIComponents() {
         videoView = findViewById(R.id.videoView);
@@ -131,11 +143,13 @@ public class VideoPlayerActivity extends Activity {
     }
 
     private boolean checkPermission() {
-        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) 
-            != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 
-                               REQUEST_READ_STORAGE);
-            return false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                   REQUEST_READ_STORAGE);
+                return false;
+            }
         }
         return true;
     }
@@ -435,6 +449,7 @@ public class VideoPlayerActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(gcRunnable);
+        
         if (videoView != null) {
             videoView.stopPlayback();
         }

@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsProvider;
@@ -143,7 +144,9 @@ public class MTDataFilesProvider extends DocumentsProvider {
             if (file != null) {
                 if (z) {
                     try {
-                        Os.lstat(file.getPath());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            Os.lstat(file.getPath());
+                        }
                     } catch (Exception unused) {
                         try {
                             throw new FileNotFoundException(str.concat(" not found"));
@@ -291,6 +294,7 @@ public class MTDataFilesProvider extends DocumentsProvider {
         L_0x00e8:
             return r11
         */
+        super.call(r10, r11, r12);
         throw new UnsupportedOperationException("Method not decompiled: bin.mt.file.content.MTDataFilesProvider.call(java.lang.String, java.lang.String, android.os.Bundle):android.os.Bundle");
     }
 

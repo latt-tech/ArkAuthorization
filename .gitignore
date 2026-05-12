@@ -1,1 +1,7 @@
 /build
+/app/build
+github.sh
+platform.keystore
+build.bat
+/.continue/
+/.gradle

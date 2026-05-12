@@ -1,6 +1,7 @@
 package prts.user.authorization0;
 
 // SecondaryStartup.java (使用XML布局版本)
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -56,11 +57,13 @@ public class SecondaryStartup extends Activity {
     }
     
     private boolean checkPermission() {
-        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) 
-            != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 
-                               REQUEST_READ_STORAGE);
-            return false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                   REQUEST_READ_STORAGE);
+                return false;
+            }
         }
         return true;
     }
