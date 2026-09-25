@@ -36,6 +36,9 @@ import java.util.zip.ZipInputStream;
 import java.io.FileOutputStream;
 import android.widget.Toast;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 public class VideoPlayerActivity extends Activity {
     private static final int REQUEST_READ_STORAGE = 1;
@@ -64,10 +67,13 @@ public class VideoPlayerActivity extends Activity {
         }
     };
 
-    private long firstBackTime;
+    private int currentIndex = 0;
+    private boolean loopMode = false; // false=自由播放（播完自动下一个），true=循环播放（重复当前视频）
+    private static final String PREFS_NAME = "player_prefs";
+    private static final String KEY_LOOP_MODE = "loop_mode";
     private static final String TARGET_FOLDER = "Authorization";
 
-    // 角色配置类
+    // 干员配置类
     private static class CharacterConfig {
         String videoPath;
         Bitmap careerIcon;
@@ -89,20 +95,158 @@ public class VideoPlayerActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (System.currentTimeMillis() - firstBackTime > 0) {
-            firstBackTime = System.currentTimeMillis();
+        showBackMenu();
+    }
+
+    private void showBackMenu() {
+        String[] options = {"上一个", "下一个", "干员列表",
+            loopMode ? "切换为自由播放（当前：循环播放）" : "切换为循环播放（当前：自由播放）",
+            "高级选项"};
+        new AlertDialog.Builder(this)
+            .setTitle("PRTS Analysis OS")
+            .setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                            playPreviousVideo();
+                            break;
+                        case 1:
+                            playNextVideo();
+                            break;
+                        case 2:
+                            showCharacterList();
+                            break;
+                        case 3:
+                            loopMode = !loopMode;
+                            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                                .edit().putBoolean(KEY_LOOP_MODE, loopMode).apply();
+                            Toast.makeText(VideoPlayerActivity.this,
+                                loopMode ? "已切换为循环播放" : "已切换为自由播放",
+                                Toast.LENGTH_SHORT).show();
+                            break;
+                        case 4:
+                            showAdvancedMenu();
+                            break;
+                    }
+                }
+            })
+            .setNegativeButton("取消", null)
+            .show();
+    }
+
+    private void showAdvancedMenu() {
+        String[] options = {"启动设置", "选择蓝牙设备", "重启系统"};
+        new AlertDialog.Builder(this)
+            .setTitle("高级选项")
+            .setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                            launchSettings();
+                            break;
+                        case 1:
+                            launchBluetoothSettings();
+                            break;
+                        case 2:
+                            System.gc();
+                            finish();
+                            break;
+                    }
+                }
+            })
+            .setNegativeButton("返回", null)
+            .show();
+    }
+
+    private void launchSettings() {
+        try {
+            Intent intent = new Intent();
+            intent.setClassName("com.android.settings", "com.android.settings.Settings");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "无法启动设置: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void launchBluetoothSettings() {
+        try {
+            // 优先直接打开蓝牙设置页，失败则回退到系统设置
+            Intent intent = new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            launchSettings();
+        }
+    }
+
+    private void showCharacterList() {
+        if (characterConfigs.isEmpty()) {
+            Toast.makeText(this, "未找到干员配置（.usr 文件）", Toast.LENGTH_SHORT).show();
             return;
         }
-        System.gc();
-        super.onBackPressed();
-        System.gc();
+
+        // 按名称排序，构建显示列表（名称 ★星级）与对应的视频路径列表
+        List<String> keys = new ArrayList<>(characterConfigs.keySet());
+        Collections.sort(keys, new java.util.Comparator<String>() {
+            @Override
+            public int compare(String a, String b) {
+                return characterConfigs.get(a).operatorName
+                    .compareTo(characterConfigs.get(b).operatorName);
+            }
+        });
+
+        final List<String> targetVideoPaths = new ArrayList<>();
+        String[] names = new String[keys.size()];
+        for (int i = 0; i < keys.size(); i++) {
+            CharacterConfig config = characterConfigs.get(keys.get(i));
+            names[i] = config.operatorName + "  " + getStarText(config.starLevel);
+            targetVideoPaths.add(config.videoPath);
+        }
+
+        new AlertDialog.Builder(this)
+            .setTitle("干员列表（共 " + names.length + " 个）")
+            .setItems(names, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    playVideoByPath(targetVideoPaths.get(which));
+                }
+            })
+            .setNegativeButton("返回", null)
+            .show();
+    }
+
+    private void playVideoByPath(String path) {
+        int index = videoPaths.indexOf(path);
+        if (index >= 0) {
+            playVideo(index);
+                } else {
+            Toast.makeText(this, "未找到该干员的视频", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void playPreviousVideo() {
+        if (videoPaths.isEmpty()) return;
+        currentIndex = (currentIndex - 1 + videoPaths.size()) % videoPaths.size();
+        playVideo(currentIndex);
+    }
+
+    private void playNextVideo() {
+        if (videoPaths.isEmpty()) return;
+        currentIndex = (currentIndex + 1) % videoPaths.size();
+        playVideo(currentIndex);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler.post(gcRunnable);
-        
+
+        // 恢复上次保存的播放模式
+        loopMode = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                       .getBoolean(KEY_LOOP_MODE, false);
 
         // 设置全屏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -126,7 +270,14 @@ public class VideoPlayerActivity extends Activity {
         // 设置视频播放完成监听器
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
-                    playVideo(0);
+                    if (loopMode) {
+                        // 循环播放：重播当前视频
+                        mp.seekTo(0);
+                        mp.start();
+                    } else {
+                        // 自由播放：自动切换到下一个视频
+                        playNextVideo();
+                    }
                 }
             });
     }
@@ -229,8 +380,12 @@ public class VideoPlayerActivity extends Activity {
                 String entryName = entry.getName();
 
                 if (entryName.equals("char.mp4")) {
-                    // 提取视频文件到临时目录
-                    File tempFile = File.createTempFile("char_", ".mp4", getCacheDir());
+                    // 提取视频文件到临时目录（getCacheDir 为 API 19，降级使用 getExternalCacheDir）
+                    File cacheDir = getExternalCacheDir();
+                    if (cacheDir == null) {
+                        cacheDir = getFilesDir();
+                    }
+                    File tempFile = File.createTempFile("char_", ".mp4", cacheDir);
                     videoPath = tempFile.getAbsolutePath();
                     extractZipEntry(zis, tempFile);
                 } 
@@ -346,6 +501,7 @@ public class VideoPlayerActivity extends Activity {
 
     private void playVideo(int index) {
         if (videoPaths.isEmpty()) return;
+        currentIndex = index;
 
         try {
             Thread.sleep(100);
@@ -358,12 +514,12 @@ public class VideoPlayerActivity extends Activity {
         videoView.setVideoURI(Uri.parse(videoPath));
         videoView.start();
 
-        // 尝试显示对应的角色信息
+        // 尝试显示对应的干员信息
         displayCharacterInfo(videoPath);
     }
 
     private void displayCharacterInfo(String videoPath) {
-        // 查找对应的角色配置
+        // 查找对应的干员配置
         for (final CharacterConfig config : characterConfigs.values()) {
             if (config.videoPath.equals(videoPath)) {
                 // 更新UI
@@ -453,8 +609,7 @@ public class VideoPlayerActivity extends Activity {
         if (videoView != null) {
             videoView.stopPlayback();
         }
-
-        // 清理角色配置中的Bitmap
+        // 清理干员配置中的Bitmap
         for (CharacterConfig config : characterConfigs.values()) {
             if (config.careerIcon != null && !config.careerIcon.isRecycled()) {
                 config.careerIcon.recycle();

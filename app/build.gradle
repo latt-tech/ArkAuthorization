@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "prts.user.authorization0"
-        minSdk 19
+        minSdk 16
         //noinspection ExpiredTargetSdkVersion
         targetSdk 28
         versionCode 20
@@ -17,11 +17,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("debug.keystore")
-            // 从环境变量或gradle属性读取密码
-            storePassword project.findProperty('RELEASE_STORE_PASSWORD') ?: System.getenv('RELEASE_STORE_PASSWORD')
-            keyAlias "minesms"
-            keyPassword project.findProperty('RELEASE_KEY_PASSWORD') ?: System.getenv('RELEASE_KEY_PASSWORD')
+            storeFile file("../platform.keystore")
+            storePassword "android"  // platform密钥密码是公开的，可以保留
+            keyAlias "platform"
+            keyPassword "android"    // platform密钥密码是公开的，可以保留
         }
         debug {
             storeFile file("../platform.keystore")

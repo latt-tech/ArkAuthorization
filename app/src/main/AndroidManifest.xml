@@ -158,32 +158,11 @@
 
         <activity android:name="MainActivity"/>
 
-        <activity
-            android:exported="true"
-            android:name="prts.user.authorization0.SecondaryStartup"/>
-
         <service android:name="prts.user.authorization0.StartMainService"/>
 
         <activity android:name="prts.user.authorization0.VideoPlayerActivity"/>
 
-        <provider
-            android:name="DocumentsProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="true"
-            android:grantUriPermissions="true"
-            android:permission="android.permission.MANAGE_DOCUMENTS">
-
-            <intent-filter>
-
-                <action android:name="android.content.action.DOCUMENTS_PROVIDER"/>
-
-            </intent-filter>
-
-        </provider>
-
         <service android:name="prts.user.authorization0.KeepAliveService"/>
-
-        <activity android:name="prts.user.authorization0.DocumentsProvider"/>
 
     </application>
 

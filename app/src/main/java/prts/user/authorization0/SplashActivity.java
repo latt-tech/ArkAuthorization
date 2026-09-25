@@ -67,9 +67,17 @@ public class SplashActivity extends Activity {
 
                 private void startVideoPlayerAndService() {
                 try {
-            Intent intent = new Intent(SplashActivity.this, SecondaryStartup.class);
+                    new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(SplashActivity.this, VideoPlayerActivity.class);
                 startActivity(intent);
-
+                }
+            }, 2000);
+            /* 
+            Intent intent = new Intent(SplashActivity.this, VideoPlayerActivity.class);
+                startActivity(intent);
+*/
             Intent keepalive = new Intent(SplashActivity.this, KeepAliveService.class);
         try {
             startService(keepalive);
