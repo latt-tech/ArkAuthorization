@@ -1,20 +1,33 @@
-# ArkAuthLegacy 
+# ArkAuthLegacy
 
----
+***
 
-### 这是什么？
-> 一个基于安卓的《明日方舟》通行认证挂件的实现
+### Get Started
 
-> 最低支持Android 4.4，你应该需要拆了废旧手机来做
+一个基于安卓的《明日方舟》通行认证挂件的实现
 
-### 我怎么用？
-> 将你的成品通行证视频(1080*1920,不然会有拉伸)扔到手机存储的DCIM文件夹内的Authorization文件夹，然后设置默认桌面，授予权限，ok！
+最低支持Android 4.4，你应该需要拆了废旧手机来做
 
-### 想改程式？
-> 把这个仓库Fork到你那，自己慢慢改，等改到差不多了你就可以提交一下PR看我心情好不好(划掉)
+实测酷派5891Q非常适合做通行证，因为有先进科技可以扣电池以及无法下拉通知栏，不容易被发现是手机(x
 
-### 有野要讲？
-> 你可以去到Issues里面慢慢讲
+### Build
 
-### 自己来整？
-> chmod u+x ./gradlew && ./gradlew build
+你应该要先拥有 脑子、手、电脑、手机 你才能从这里克隆仓库
+
+> git clone <https://github.com/latt-tech/ArkAuthorization.git>
+
+> cd ArkAuthorization
+
+> chmod u+x ./gradlew && ./gradlew build && ./gradlew assembleDebug && ./gradlew assembleRelease
+
+成品应该在 build/outputs/apk/ 目录下，debug/app-debug.apk 和 release/app-release.apk 分别是可调试版本和一般版本（如果你真的需要调试那么请一定要装debug版）
+
+### 看看其他项目
+
+- [白银的电子通行证](https://github.com/rhodesepass/drm_app)
+
+- [白银的电子通行证](https://github.com/rhodesepass/hardware)
+
+### 致谢
+
+唔...这里没有东西哦
