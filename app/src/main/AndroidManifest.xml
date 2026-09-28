@@ -162,6 +162,30 @@
 
         <activity android:name="prts.user.authorization0.VideoPlayerActivity"/>
 
+        <activity
+            android:name="prts.user.authorization0.MediaPlayerActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+
+        <activity
+            android:name="prts.user.authorization0.FileChooserActivity"
+            android:exported="false"
+            android:label="选择文件"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+
+        <activity
+            android:name="prts.user.authorization0.ApplicationActivity"
+            android:exported="false"
+            android:label="应用"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+
+        <!-- 隐藏的浏览器页面：不显示在应用中心，仅通过 URI 显式调起 -->
+        <activity
+            android:name="prts.user.authorization0.BrowserActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+
         <service android:name="prts.user.authorization0.KeepAliveService"/>
 
     </application>

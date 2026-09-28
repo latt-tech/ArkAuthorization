@@ -99,9 +99,7 @@ public class VideoPlayerActivity extends Activity {
     }
 
     private void showBackMenu() {
-        String[] options = {"上一个", "下一个", "干员列表",
-            loopMode ? "切换为自由播放（当前：循环播放）" : "切换为循环播放（当前：自由播放）",
-            "高级选项"};
+        String[] options = {"上一个", "下一个", "干员列表", "应用", "高级选项"};
         new AlertDialog.Builder(this)
             .setTitle("PRTS Analysis OS")
             .setItems(options, new DialogInterface.OnClickListener() {
@@ -118,12 +116,7 @@ public class VideoPlayerActivity extends Activity {
                             showCharacterList();
                             break;
                         case 3:
-                            loopMode = !loopMode;
-                            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                                .edit().putBoolean(KEY_LOOP_MODE, loopMode).apply();
-                            Toast.makeText(VideoPlayerActivity.this,
-                                loopMode ? "已切换为循环播放" : "已切换为自由播放",
-                                Toast.LENGTH_SHORT).show();
+                            openApplicationHub();
                             break;
                         case 4:
                             showAdvancedMenu();
@@ -135,8 +128,19 @@ public class VideoPlayerActivity extends Activity {
             .show();
     }
 
+    private void openApplicationHub() {
+        try {
+            Intent intent = new Intent(this, ApplicationActivity.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "无法打开应用: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void showAdvancedMenu() {
-        String[] options = {"启动设置", "选择蓝牙设备", "重启系统"};
+        String[] options = {
+            loopMode ? "切换为自由播放（当前：循环播放）" : "切换为循环播放（当前：自由播放）",
+            "启动设置", "选择蓝牙设备", "重启系统"};
         new AlertDialog.Builder(this)
             .setTitle("高级选项")
             .setItems(options, new DialogInterface.OnClickListener() {
@@ -144,12 +148,20 @@ public class VideoPlayerActivity extends Activity {
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
                         case 0:
-                            launchSettings();
+                            loopMode = !loopMode;
+                            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                                .edit().putBoolean(KEY_LOOP_MODE, loopMode).apply();
+                            Toast.makeText(VideoPlayerActivity.this,
+                                loopMode ? "已切换为循环播放" : "已切换为自由播放",
+                                Toast.LENGTH_SHORT).show();
                             break;
                         case 1:
-                            launchBluetoothSettings();
+                            launchSettings();
                             break;
                         case 2:
+                            launchBluetoothSettings();
+                            break;
+                        case 3:
                             System.gc();
                             finish();
                             break;

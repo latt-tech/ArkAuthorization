@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@android:color/black">
+
+	<EditText
+		android:id="@+id/search_box"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="搜索应用 / 输入网址"
+		android:textColorHint="#80FFFFFF"
+		android:textColor="@android:color/white"
+		android:textSize="14sp"
+		android:singleLine="true"
+		android:imeOptions="actionGo"
+		android:inputType="textUri"
+		android:padding="12dp"/>
+
+	<GridView
+		android:id="@+id/app_grid"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:numColumns="4"
+		android:stretchMode="columnWidth"
+		android:verticalSpacing="8dp"
+		android:horizontalSpacing="4dp"
+		android:padding="8dp"
+		android:clipToPadding="false"
+		android:scrollbarStyle="outsideOverlay"/>
+
+</LinearLayout>
+

@@ -16,7 +16,7 @@ import android.net.Uri;
 
 public class SplashActivity extends Activity {
 
-    private static final int SPLASH_DELAY = 3000; // 3秒延迟 
+    private static final int SPLASH_DELAY = 6000; // 3秒延迟 
     private static final int OVERLAY_PERMISSION_REQUEST_CODE = 1001;
     private boolean isCheckingPermission = false;
 
@@ -67,17 +67,8 @@ public class SplashActivity extends Activity {
 
                 private void startVideoPlayerAndService() {
                 try {
-                    new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(SplashActivity.this, VideoPlayerActivity.class);
-                startActivity(intent);
-                }
-            }, 2000);
-            /* 
-            Intent intent = new Intent(SplashActivity.this, VideoPlayerActivity.class);
-                startActivity(intent);
-*/
+                   Intent intent = new Intent(SplashActivity.this, VideoPlayerActivity.class);
+                    startActivity(intent);
             Intent keepalive = new Intent(SplashActivity.this, KeepAliveService.class);
         try {
             startService(keepalive);
