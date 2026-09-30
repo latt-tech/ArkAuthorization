@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@android:color/black">
+
+	<TextView
+		android:id="@+id/settings_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+		android:text="设置"
+		android:textColor="@android:color/white"
+		android:textSize="20sp"
+		android:textStyle="bold"
+		android:background="#80000000"/>
+
+	<CheckBox
+		android:id="@+id/checkbox_loop"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+		android:text="循环播放"
+		android:textColor="@android:color/white"
+		android:textSize="16sp"/>
+
+	<TextView
+		android:id="@+id/loop_hint"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingStart="16dp"
+		android:paddingEnd="16dp"
+		android:paddingBottom="16dp"
+		android:text="勾选：循环重复当前视频；不勾选：播放完毕后轮播下一个视频。"
+		android:textColor="#B3FFFFFF"
+		android:textSize="13sp"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="#33FFFFFF"/>
+
+	<CheckBox
+		android:id="@+id/checkbox_app_center"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+		android:text="应用中心"
+		android:textColor="@android:color/white"
+		android:textSize="16sp"/>
+
+	<TextView
+		android:id="@+id/app_center_hint"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingStart="16dp"
+		android:paddingEnd="16dp"
+		android:paddingBottom="16dp"
+		android:text="勾选：在返回菜单中显示“应用”入口；不勾选：隐藏应用中心。"
+		android:textColor="#B3FFFFFF"
+		android:textSize="13sp"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="#33FFFFFF"/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+		android:text="实验性功能"
+		android:textColor="@android:color/white"
+		android:textSize="16sp"
+		android:textStyle="bold"/>
+
+	<TextView
+		android:id="@+id/text_node_code"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="16dp"
+		android:paddingRight="16dp"
+		android:paddingBottom="8dp"
+		android:text="本机节点码：RI_PRTS_XXXXXX"
+		android:textColor="#B3FFFFFF"
+		android:textSize="13sp"/>
+
+	<Button
+		android:id="@+id/button_edit_profile"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="16dp"
+		android:layout_marginRight="16dp"
+		android:text="编辑游戏名片"
+		android:textColor="@android:color/white"/>
+
+	<CheckBox
+		android:id="@+id/checkbox_card_exchange"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+		android:text="蓝牙名片交换"
+		android:textColor="@android:color/white"
+		android:textSize="16sp"/>
+
+	<TextView
+		android:id="@+id/card_exchange_hint"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="16dp"
+		android:paddingRight="16dp"
+		android:paddingBottom="8dp"
+		android:text="开启后每 5 分钟交换一次、每次持续 3 分钟。需先填写游戏名片。"
+		android:textColor="#B3FFFFFF"
+		android:textSize="13sp"/>
+
+	<Button
+		android:id="@+id/button_view_cards"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="16dp"
+		android:layout_marginRight="16dp"
+		android:layout_marginBottom="16dp"
+		android:text="查看收到的名片"
+		android:textColor="@android:color/white"/>
+
+</LinearLayout>

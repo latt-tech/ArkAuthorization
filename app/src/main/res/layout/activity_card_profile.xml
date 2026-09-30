@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@android:color/black">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			android:text="游戏名片"
+			android:textColor="@android:color/white"
+			android:textSize="20sp"
+			android:textStyle="bold"
+			android:background="#80000000"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="16dp"
+			android:paddingRight="16dp"
+			android:paddingTop="16dp"
+			android:text="游戏名"
+			android:textColor="@android:color/white"
+			android:textSize="14sp"/>
+
+		<EditText
+			android:id="@+id/edit_game"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="16dp"
+			android:layout_marginRight="16dp"
+			android:hint="例如：Arknights"
+			android:textColor="@android:color/white"
+			android:textColorHint="#66FFFFFF"
+			android:inputType="text"
+			android:maxLines="1"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="16dp"
+			android:paddingRight="16dp"
+			android:paddingTop="16dp"
+			android:text="游戏内 UID"
+			android:textColor="@android:color/white"
+			android:textSize="14sp"/>
+
+		<EditText
+			android:id="@+id/edit_uid"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="16dp"
+			android:layout_marginRight="16dp"
+			android:hint="字母/数字/_/-"
+			android:textColor="@android:color/white"
+			android:textColorHint="#66FFFFFF"
+			android:inputType="text"
+			android:maxLines="1"/>
+
+		<Button
+			android:id="@+id/button_region"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="16dp"
+			android:layout_marginRight="16dp"
+			android:layout_marginTop="16dp"
+			android:text="游戏区域：CN"
+			android:textColor="@android:color/white"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="16dp"
+			android:paddingRight="16dp"
+			android:paddingTop="8dp"
+			android:text="资料会临时保存在本应用的数据目录中，仅用于蓝牙名片交换。"
+			android:textColor="#B3FFFFFF"
+			android:textSize="13sp"/>
+
+		<Button
+			android:id="@+id/button_save"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="16dp"
+			android:layout_marginRight="16dp"
+			android:layout_marginTop="16dp"
+			android:text="保存"
+			android:textColor="@android:color/white"/>
+
+		<Button
+			android:id="@+id/button_cancel"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="16dp"
+			android:layout_marginRight="16dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="16dp"
+			android:text="取消"
+			android:textColor="@android:color/white"/>
+
+	</LinearLayout>
+</ScrollView>

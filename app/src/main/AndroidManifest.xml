@@ -4,6 +4,37 @@
     sharedUserId="minesms.app"
     package="prts.user.authorization0">
 
+    <!-- ===== 蓝牙名片交换 ===== -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <!-- API 23-30 扫描蓝牙需要定位权限；31+ 改用 BLUETOOTH_SCAN，故限定 maxSdkVersion -->
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30"/>
+
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:maxSdkVersion="30"/>
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <!-- targetSdk 28 下被系统忽略，仅为将来升级 targetSdk 预留 -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false"/>
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -179,6 +210,12 @@
             android:label="应用"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
+        <activity
+            android:name="prts.user.authorization0.SettingsActivity"
+            android:exported="false"
+            android:label="设置"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+
         <!-- 隐藏的浏览器页面：不显示在应用中心，仅通过 URI 显式调起 -->
         <activity
             android:name="prts.user.authorization0.BrowserActivity"
@@ -187,6 +224,24 @@
             android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         <service android:name="prts.user.authorization0.KeepAliveService"/>
+
+        <!-- 蓝牙名片交换 -->
+        <service
+            android:name="prts.user.authorization0.card.BluetoothCardService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice"/>
+
+        <activity
+            android:name="prts.user.authorization0.card.CardProfileActivity"
+            android:exported="false"
+            android:label="游戏名片"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+
+        <activity
+            android:name="prts.user.authorization0.card.CardRecordsActivity"
+            android:exported="false"
+            android:label="收到的名片"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
 
     </application>
 

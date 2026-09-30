@@ -71,6 +71,7 @@ public class VideoPlayerActivity extends Activity {
     private boolean loopMode = false; // false=自由播放（播完自动下一个），true=循环播放（重复当前视频）
     private static final String PREFS_NAME = "player_prefs";
     private static final String KEY_LOOP_MODE = "loop_mode";
+    private static final String KEY_APP_CENTER = "app_center_enabled";
     private static final String TARGET_FOLDER = "Authorization";
 
     // 干员配置类
@@ -99,28 +100,35 @@ public class VideoPlayerActivity extends Activity {
     }
 
     private void showBackMenu() {
-        String[] options = {"上一个", "下一个", "干员列表", "应用", "高级选项"};
+        // 应用中心默认禁用，仅在启用时显示“应用”入口
+        boolean appCenterEnabled = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                                       .getBoolean(KEY_APP_CENTER, false);
+
+        final List<String> options = new ArrayList<>();
+        options.add("上一个");
+        options.add("下一个");
+        options.add("干员列表");
+        if (appCenterEnabled) {
+            options.add("应用");
+        }
+        options.add("高级选项");
+
         new AlertDialog.Builder(this)
             .setTitle("PRTS Analysis OS")
-            .setItems(options, new DialogInterface.OnClickListener() {
+            .setItems(options.toArray(new String[0]), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case 0:
-                            playPreviousVideo();
-                            break;
-                        case 1:
-                            playNextVideo();
-                            break;
-                        case 2:
-                            showCharacterList();
-                            break;
-                        case 3:
-                            openApplicationHub();
-                            break;
-                        case 4:
-                            showAdvancedMenu();
-                            break;
+                    String option = options.get(which);
+                    if ("上一个".equals(option)) {
+                        playPreviousVideo();
+                    } else if ("下一个".equals(option)) {
+                        playNextVideo();
+                    } else if ("干员列表".equals(option)) {
+                        showCharacterList();
+                    } else if ("应用".equals(option)) {
+                        openApplicationHub();
+                    } else if ("高级选项".equals(option)) {
+                        showAdvancedMenu();
                     }
                 }
             })
@@ -139,8 +147,7 @@ public class VideoPlayerActivity extends Activity {
 
     private void showAdvancedMenu() {
         String[] options = {
-            loopMode ? "切换为自由播放（当前：循环播放）" : "切换为循环播放（当前：自由播放）",
-            "启动设置", "选择蓝牙设备", "重启系统"};
+            "设置", "Android系统设置", "蓝牙设备", "Reset PRTS System"};
         new AlertDialog.Builder(this)
             .setTitle("高级选项")
             .setItems(options, new DialogInterface.OnClickListener() {
@@ -148,12 +155,7 @@ public class VideoPlayerActivity extends Activity {
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
                         case 0:
-                            loopMode = !loopMode;
-                            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                                .edit().putBoolean(KEY_LOOP_MODE, loopMode).apply();
-                            Toast.makeText(VideoPlayerActivity.this,
-                                loopMode ? "已切换为循环播放" : "已切换为自由播放",
-                                Toast.LENGTH_SHORT).show();
+                            openSettings();
                             break;
                         case 1:
                             launchSettings();
@@ -170,6 +172,15 @@ public class VideoPlayerActivity extends Activity {
             })
             .setNegativeButton("返回", null)
             .show();
+    }
+
+    private void openSettings() {
+        try {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "无法打开设置: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launchSettings() {
@@ -608,6 +619,9 @@ public class VideoPlayerActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        // 返回时同步设置页中的循环播放开关
+        loopMode = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                       .getBoolean(KEY_LOOP_MODE, false);
         if (videoView != null && !videoView.isPlaying()) {
             videoView.start();
         }

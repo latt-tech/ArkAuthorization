@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@android:color/black">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="16dp"
+		android:text="收到的名片"
+		android:textColor="@android:color/white"
+		android:textSize="20sp"
+		android:textStyle="bold"
+		android:background="#80000000"/>
+
+	<ListView
+		android:id="@+id/list_cards"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"/>
+
+	<TextView
+		android:id="@+id/text_empty"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="24dp"
+		android:gravity="center"
+		android:text="还没有收到任何名片"
+		android:textColor="#B3FFFFFF"
+		android:textSize="14sp"
+		android:visibility="gone"/>
+
+</LinearLayout>
